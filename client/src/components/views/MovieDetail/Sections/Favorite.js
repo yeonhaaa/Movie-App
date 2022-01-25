@@ -12,12 +12,16 @@ function Favorite(props) {
     const [FavoriteNumber, setFavoriteNumber] = useState(0)
     const [Favorited, setFavorited] = useState(false)
 
+    let variables = {
+        userFrom: userFrom,
+        movieId: movieId,
+        movieTitle: movieTitle,
+        moviePost: moviePost,
+        movieRunTime: movieRunTime
+    }
+
     useEffect(() => {
 
-        let variables = {
-            userFrom,
-            movieId
-        }
 
         axios.post('/api/favorite/favoriteNumber', variables)
             .then(response => {
@@ -40,9 +44,35 @@ function Favorite(props) {
             })
     })
 
+    const onClickFavorite = () => {
+       
+        if (Favorited) {
+            axios.post('/api/favorite/removeFromFavorite', variables)
+                .then(response => {
+                    if(response.data.success) {
+                        setFavoriteNumber(FavoriteNumber - 1)
+                        setFavorited(!Favorited)   // true -> false, false -> true
+                    } else {
+                        alert('Favorite 리스트에서 지우는 것을 실패했습니다.')
+                    }
+                })
+
+        } else {
+            axios.post('/api/favorite/addToFavorite', variables)
+            .then(response => {
+                if(response.data.success) {
+                    setFavoriteNumber(FavoriteNumber + 1)
+                    setFavorited(!Favorited) 
+                } else {
+                    alert('Favorite 리스트에 추가를 실패했습니다.')
+                }
+            })
+        }
+    }
+
     return (
         <div>
-            <button>{Favorited? "Not Favorite": "Add to Favorite"} {FavoriteNumber}</button>
+            <button onClick={onClickFavorite}>{Favorited? "Not Favorite": "Add to Favorite"} {FavoriteNumber}</button>
         </div>
 
     )
