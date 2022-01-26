@@ -21,7 +21,7 @@ function FavoritePage() {
         //         }
         //     })
 
-    })
+    }, [])
 
     const fetchFavoredMovie = () => {
         axios.post('/api/favorite/getFavoritedMovie', { userFrom: localStorage.getItem('userId') })
